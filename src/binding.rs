@@ -1,10 +1,9 @@
-use uuid::Uuid;
-
 use super::traits::*;
 use super::releasable::*;
 use super::binding_context::*;
 
 use std::sync::*;
+pub use uuid::Uuid;
 
 ///
 /// An internal representation of a bound value
