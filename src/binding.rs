@@ -1,3 +1,5 @@
+use uuid::Uuid;
+
 use super::traits::*;
 use super::releasable::*;
 use super::binding_context::*;
@@ -103,6 +105,7 @@ impl<Value: PartialEq> PartialEq for BoundValue<Value> {
 ///
 #[derive(Clone)]
 pub struct Binding<Value> {
+    pub id: Uuid,
     /// The value stored in this binding
     value: Arc<Mutex<BoundValue<Value>>>
 }
@@ -128,6 +131,7 @@ impl<Value: PartialEq> PartialEq for Binding<Value> {
 impl<Value: Clone+PartialEq> Binding<Value> {
     pub fn new(value: Value) -> Binding<Value> {
         Binding {
+            id: Uuid::new_v4(),
             value: Arc::new(Mutex::new(BoundValue::new(value)))
         }
     }
