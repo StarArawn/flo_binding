@@ -69,7 +69,7 @@ impl<'a, Value> From<&'a BindRef<Value>> for BindRef<Value> {
     }
 }
 
-impl<Value: 'static+Clone+Send+PartialEq> From<Binding<Value>> for BindRef<Value> {
+impl<Value: 'static+Clone+Send+Sync+PartialEq> From<Binding<Value>> for BindRef<Value> {
     #[inline]
     fn from(val: Binding<Value>) -> Self {
         BindRef {
@@ -78,7 +78,7 @@ impl<Value: 'static+Clone+Send+PartialEq> From<Binding<Value>> for BindRef<Value
     }
 }
 
-impl<'a, Value: 'static+Clone+PartialEq+Send> From<&'a Binding<Value>> for BindRef<Value> {
+impl<'a, Value: 'static+Clone+PartialEq+Sync+Send> From<&'a Binding<Value>> for BindRef<Value> {
     #[inline]
     fn from(val: &'a Binding<Value>) -> Self {
         BindRef {
@@ -87,7 +87,7 @@ impl<'a, Value: 'static+Clone+PartialEq+Send> From<&'a Binding<Value>> for BindR
     }
 }
 
-impl<Value: 'static+Clone+PartialEq+Send, TFn> From<ComputedBinding<Value, TFn>> for BindRef<Value> 
+impl<Value: 'static+Clone+PartialEq+Sync+Send, TFn> From<ComputedBinding<Value, TFn>> for BindRef<Value> 
 where TFn: 'static+Send+Sync+Fn() -> Value {
     #[inline]
     fn from(val: ComputedBinding<Value, TFn>) -> Self {
@@ -97,7 +97,7 @@ where TFn: 'static+Send+Sync+Fn() -> Value {
     }
 }
 
-impl<'a, Value: 'static+Clone+PartialEq+Send, TFn> From<&'a ComputedBinding<Value, TFn>> for BindRef<Value> 
+impl<'a, Value: 'static+Clone+PartialEq+Sync+Send, TFn> From<&'a ComputedBinding<Value, TFn>> for BindRef<Value> 
 where TFn: 'static+Send+Sync+Fn() -> Value {
     #[inline]
     fn from(val: &'a ComputedBinding<Value, TFn>) -> Self {
@@ -107,7 +107,7 @@ where TFn: 'static+Send+Sync+Fn() -> Value {
     }
 }
 
-impl<'a, Value: 'static+Clone+PartialEq+Send+Into<Binding<Value>>> From<&'a Value> for BindRef<Value> {
+impl<'a, Value: 'static+Clone+PartialEq+Send+Sync+Into<Binding<Value>>> From<&'a Value> for BindRef<Value> {
     #[inline]
     fn from(val: &'a Value) -> BindRef<Value> {
         let binding: Binding<Value> = val.into();
@@ -116,7 +116,7 @@ impl<'a, Value: 'static+Clone+PartialEq+Send+Into<Binding<Value>>> From<&'a Valu
 }
 
 #[cfg(feature = "stream")]
-impl<Value: 'static+Clone+Send+PartialEq> From<StreamBinding<Value>> for BindRef<Value> {
+impl<Value: 'static+Clone+Send+Sync+PartialEq> From<StreamBinding<Value>> for BindRef<Value> {
     #[inline]
     fn from(val: StreamBinding<Value>) -> Self {
         BindRef {

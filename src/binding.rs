@@ -136,13 +136,13 @@ impl<Value: Clone+PartialEq> Binding<Value> {
     }
 }
 
-impl<Value: 'static+Clone+PartialEq+Send> Changeable for Binding<Value> {
+impl<Value: 'static+Clone+PartialEq+Send+Sync> Changeable for Binding<Value> {
     fn when_changed(&self, what: Arc<dyn Notifiable>) -> Box<dyn Releasable> {
         self.value.lock().unwrap().when_changed(what)
     }
 }
 
-impl<Value: 'static+Clone+PartialEq+Send> Bound<Value> for Binding<Value> {
+impl<Value: 'static+Clone+PartialEq+Send+Sync> Bound<Value> for Binding<Value> {
     fn get(&self) -> Value {
         BindingContext::add_dependency(self.clone());
 
@@ -150,7 +150,7 @@ impl<Value: 'static+Clone+PartialEq+Send> Bound<Value> for Binding<Value> {
     }
 }
 
-impl<Value: 'static+Clone+PartialEq+Send> MutableBound<Value> for Binding<Value> {
+impl<Value: 'static+Clone+PartialEq+Send+Sync> MutableBound<Value> for Binding<Value> {
     fn set(&self, new_value: Value) {
         // Update the value with the lock held
         let notifications = {
@@ -178,7 +178,7 @@ impl<Value: 'static+Clone+PartialEq+Send> MutableBound<Value> for Binding<Value>
     }
 }
 
-impl<Value: 'static + Clone + PartialEq + Send> WithBound<Value> for Binding<Value> {
+impl<Value: 'static + Clone + PartialEq + Send + Sync> WithBound<Value> for Binding<Value> {
     fn with_ref<F, T>(&self, f: F) -> T
     where
         F: FnOnce(&Value) -> T,
@@ -215,21 +215,21 @@ impl<Value: 'static + Clone + PartialEq + Send> WithBound<Value> for Binding<Val
 
 }
 
-impl<Value: 'static+Clone+PartialEq+Send> From<Value> for Binding<Value> {
+impl<Value: 'static+Clone+PartialEq+Send+Sync> From<Value> for Binding<Value> {
     #[inline]
     fn from(val: Value) -> Binding<Value> {
         Binding::new(val)
     }
 }
 
-impl<'a, Value: 'static+Clone+PartialEq+Send> From<&'a Binding<Value>> for Binding<Value> {
+impl<'a, Value: 'static+Clone+PartialEq+Send+Sync> From<&'a Binding<Value>> for Binding<Value> {
     #[inline]
     fn from(val: &'a Binding<Value>) -> Binding<Value> {
         Binding::clone(val)
     }
 }
 
-impl<'a, Value: 'static+Clone+PartialEq+Send> From<&'a Value> for Binding<Value> {
+impl<'a, Value: 'static+Clone+PartialEq+Send+Sync> From<&'a Value> for Binding<Value> {
     #[inline]
     fn from(val: &'a Value) -> Binding<Value> {
         Binding::new(val.clone())
